@@ -1,0 +1,21 @@
+gcloudのインストール: 下記のコマンドをPowershellで実行
+  (New-Object Net.WebClient).DownloadFile(
+  "https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe",
+  "$env:Temp\GoogleCloudSDKInstaller.exe"
+  )
+  & "$env:Temp\GoogleCloudSDKInstaller.exe"
+  インストール中の設定: ログイン、プロジェクトの選択を行う
+gcloudの初期化: gcloud init
+アプリケーションのデフォルト設定: gcloud auth application-default login
+GCPプロジェクトの環境変数への設定: setx GOOGLE_CLOUD_PROJECT xxxxxx-xxxxxx
+GeminiのAPI有効化: gcloud services enable cloudaicompanion.googleapis.com
+Gemini CLI: npm install -g @google/gemini-cli
+
+
+
+Firebase CLI のインストール: npm install -g firebase-tools
+
+
+Swagger & OpenAPI
+Vercelのフロント＆API
+Firebase Authorication & FireStore

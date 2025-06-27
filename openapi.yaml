@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  version: "1.0.0"
+  title: Astro Search API
+  description: 「Astro Search」用のAPI
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://dev.example.com/api
+    description: Development environment
+  - url: https://api.example.com
+    description: Production environment
+
+paths:
+  /map:
+    get:
+      summary: 場所を検索する
+      description: クエリ文字列に基づき、Google Places APIを使用して候補を取得
+      parameters:
+        - name: query
+          in: query
+          description: 検索キーワード（例：東京タワー）
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 検索結果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResults"
+        "400":
+          description: パラメータエラー
+
+  /map/{place_id}:
+    get:
+      summary: 場所の詳細を取得する
+      description: 指定された Place ID に対して、緯度・経度・住所などを取得
+      parameters:
+        - name: place_id
+          in: path
+          required: true
+          description: Google Places API の Place ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 詳細情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaceDetails"
+        "404":
+          description: Place ID が見つかりません
+  /log/access:
+    post:
+      summary: アクセスログを保存する
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                session_id:
+                  type: string
+                accessed_at:
+                  type: string
+                  format: date-time
+              required:
+                - id
+                - session_id
+                - accessed_at
+      responses:
+        "200":
+          description: 保存成功
+        "400":
+          description: パラメータエラー
+  /log/search_result:
+    post:
+      summary: 検索結果ログの記録
+      description: Places API を使用した検索結果のログを記録します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                session_id:
+                  type: string
+                  format: uuid
+                place_id:
+                  type: string
+                  description: Google Places API の Places ID
+                place_name:
+                  type: string
+                  description: 住所全体
+                query:
+                  type: string
+                  description: ユーザーが入力した検索キーワード
+                latitude:
+                  type: number
+                  format: double
+                  example: 35.6586
+                longitude:
+                  type: number
+                  format: double
+                  example: 139.7454
+                searched_at:
+                  type: string
+                  format: date-time
+              required:
+                - id
+                - session_id
+                - place_id
+                - place_name
+                - query
+                - latitude
+                - longitude
+                - searched_at
+      responses:
+        "200":
+          description: 保存成功
+        "400":
+          description: パラメータエラー
+  /test-data/initialize:
+    post:
+      summary: Cosmos DB の初期化
+      description: Cosmos DB のデータベースとコンテナ(access, search_result)を作成します（存在しない場合のみ）
+      responses:
+        "200":
+          description: 初期化成功
+        "500":
+          description: 初期化処理でエラーが発生
+
+components:
+  schemas:
+    SearchResults:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              place_id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+
+    PlaceDetails:
+      type: object
+      properties:
+        place_id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+        map_url:
+          type: string
