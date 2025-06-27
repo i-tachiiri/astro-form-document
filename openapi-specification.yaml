@@ -1,0 +1,25 @@
+概要: openapi.yaml を作成するための仕様書です。
+APIのURL:
+  開発環境: http://localhost:8080
+  検証環境: https://dev.example.com/api #未定
+  本番環境: https://api.example.com #未定
+エンドポイント:
+  /map:
+    参照先: Google Places API
+    説明:
+      クエリ文字列に基づき、Google Places APIを使用して場所の候補を取得します。
+      検索キーワードはクエリパラメータ `query` で指定します。
+    スキーマ:
+      place_id: string # Google Places API の Place ID
+      name: string # 例：東京タワー
+      address: string # 例：東京都港区芝公園4丁目2-8
+  /map/{place_id}: 場所の詳細を取得する
+    参照先: Google Places details API
+    説明:
+      指定された Place ID に対して、緯度・経度・住所などの詳細情報を取得します。
+    スキーマ:
+      place_id: string # Google Places API の Place ID
+      name: string # 例：東京タワー
+      address: string # 例：東京都港区芝公園4丁目2-8
+      latitude: number # 緯度
+      longitude: number # 経度  

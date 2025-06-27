@@ -16,7 +16,8 @@ paths:
   /map:
     get:
       summary: 場所を検索する
-      description: クエリ文字列に基づき、Google Places APIを使用して候補を取得
+      description: クエリ文字列に基づき、Google Places APIを使用して場所の候補を取得します。
+      検索キーワードはクエリパラメータ `query` で指定します。
       parameters:
         - name: query
           in: query
@@ -36,14 +37,23 @@ paths:
                     type: array
                     items:
                       type: object
-                      description: Placeholder for search result item
+                      properties:
+                        place_id:
+                          type: string
+                          description: Google Places API の Place ID
+                        name:
+                          type: string
+                          description: 例：東京タワー
+                        address:
+                          type: string
+                          description: 例：東京都港区芝公園4丁目2-8
         "400":
           description: パラメータエラー
 
   /map/{place_id}:
     get:
       summary: 場所の詳細を取得する
-      description: 指定された Place ID に対して、緯度・経度・住所などを取得
+      description: 指定された Place ID に対して、緯度・経度・住所などの詳細情報を取得します。
       parameters:
         - name: place_id
           in: path
@@ -68,9 +78,11 @@ paths:
                   latitude:
                     type: number
                     format: float
+                    description: 緯度
                   longitude:
                     type: number
                     format: float
+                    description: 経度
                 description: Placeholder for place details
         "404":
           description: Place ID が見つかりません
