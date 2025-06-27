@@ -30,7 +30,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SearchResults"
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      description: Placeholder for search result item
         "400":
           description: パラメータエラー
 
@@ -51,128 +57,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PlaceDetails"
+                type: object
+                properties:
+                  place_id:
+                    type: string
+                  name:
+                    type: string
+                  address:
+                    type: string
+                  latitude:
+                    type: number
+                    format: float
+                  longitude:
+                    type: number
+                    format: float
+                description: Placeholder for place details
         "404":
           description: Place ID が見つかりません
-  /log/access:
-    post:
-      summary: アクセスログを保存する
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                session_id:
-                  type: string
-                accessed_at:
-                  type: string
-                  format: date-time
-              required:
-                - id
-                - session_id
-                - accessed_at
-      responses:
-        "200":
-          description: 保存成功
-        "400":
-          description: パラメータエラー
-  /log/search_result:
-    post:
-      summary: 検索結果ログの記録
-      description: Places API を使用した検索結果のログを記録します。
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                session_id:
-                  type: string
-                  format: uuid
-                place_id:
-                  type: string
-                  description: Google Places API の Places ID
-                place_name:
-                  type: string
-                  description: 住所全体
-                query:
-                  type: string
-                  description: ユーザーが入力した検索キーワード
-                latitude:
-                  type: number
-                  format: double
-                  example: 35.6586
-                longitude:
-                  type: number
-                  format: double
-                  example: 139.7454
-                searched_at:
-                  type: string
-                  format: date-time
-              required:
-                - id
-                - session_id
-                - place_id
-                - place_name
-                - query
-                - latitude
-                - longitude
-                - searched_at
-      responses:
-        "200":
-          description: 保存成功
-        "400":
-          description: パラメータエラー
-  /test-data/initialize:
-    post:
-      summary: Cosmos DB の初期化
-      description: Cosmos DB のデータベースとコンテナ(access, search_result)を作成します（存在しない場合のみ）
-      responses:
-        "200":
-          description: 初期化成功
-        "500":
-          description: 初期化処理でエラーが発生
-
-components:
-  schemas:
-    SearchResults:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            type: object
-            properties:
-              place_id:
-                type: string
-              name:
-                type: string
-              description:
-                type: string
-
-    PlaceDetails:
-      type: object
-      properties:
-        place_id:
-          type: string
-        name:
-          type: string
-        address:
-          type: string
-        lat:
-          type: number
-          format: float
-        lng:
-          type: number
-          format: float
-        map_url:
-          type: string
